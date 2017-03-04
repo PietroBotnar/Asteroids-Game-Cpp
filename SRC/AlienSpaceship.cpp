@@ -56,6 +56,7 @@ void AlienSpaceship::Update(int t)
 			engage_timer = 5000;
 		}
 	}
+
 	GameObject::Update(t);
 }
 
@@ -135,6 +136,8 @@ void AlienSpaceship::Shoot()
 	bullet->SetScale(0.02f);
 	// Add the new bullet to the game world
 	mWorld->AddObject(bullet);
+
+	mWorld->PlayAudio("enemy_shot");
 }
 
 bool AlienSpaceship::CollisionTest(shared_ptr<GameObject> o)

@@ -4,6 +4,9 @@
 #include "GameUtil.h"
 #include "IGameWorldListener.h"
 
+#include "..\include\FMOD_Studio\fmod_common.h"
+#include "..\include\FMOD_Studio\fmod.hpp"
+
 class GameObject;
 
 // Define a type of list to hold game objects
@@ -48,6 +51,16 @@ public:
 
 	void WrapXY(float &x, float &y);
 
+	//audio
+	void PlayAudio(char* id, FMOD::Channel** channel = NULL);
+	void PlayMusic(char* id);
+	void StopMusic() {
+		gameMusicChannel->stop();
+	}
+	void LoadAudioFile(char* id, char *filename);
+	void LoadMusicStream(char* id, char *filename);
+	void FmodErrorCheck(FMOD_RESULT result, std::string filename);
+	
 protected:
 	void UpdateObjects(int t);
 	void UpdateCollisions(int t);
@@ -69,6 +82,13 @@ protected:
 	int mWidth;
 	// The height of the world
 	int mHeight;
+
+	//audio system
+	FMOD_RESULT result;
+	FMOD::System *m_FmodSystem;	// the global variable for talking to FMOD
+	
+	std::map<char*, FMOD::Sound*> _audioFiles;
+	FMOD::Channel* gameMusicChannel;
 };
 
 #endif

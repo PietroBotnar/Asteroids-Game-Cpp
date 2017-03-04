@@ -20,7 +20,6 @@ class AlienSpaceship;
 class BulletUpgrade;
 class AlienAI;
 
-
 class Asteroids : public GameSession, public IKeyboardListener, public IGameWorldListener, 
 	public IScoreListener, public IPlayerListener
 {
@@ -95,5 +94,7 @@ private:
 	const static uint CREATE_NEW_SHIELD = 4;
 	const static uint CREATE_NEW_BULLET_UPGRADE = 5;
 };
+
+
 
 #endif

@@ -90,6 +90,8 @@ void Spaceship::Shoot(void)
 
 	// Add the new bullet to the game world
 	mWorld->AddObject(bullet);
+
+	mWorld->PlayAudio("player_shot");
 }
 
 void Spaceship::CreateShield(int t)

@@ -25,7 +25,10 @@ public:
 		}
 	}
 
-	void OnObjectAdded(GameWorld* world, shared_ptr<GameObject> object) {}
+	void OnObjectAdded(GameWorld* world, shared_ptr<GameObject> object) 
+	{
+
+	}
 
 	void OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 	{
@@ -102,6 +105,8 @@ public:
 			(*lit)->OnPlayerHit(player->GetHealth());
 		}
 	}
+
+
 	void SetEnemy(shared_ptr<AlienSpaceship> enemy){
 		alien = enemy;
 	}

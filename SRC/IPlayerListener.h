@@ -10,6 +10,7 @@ public:
 	virtual void OnBulletUpgradePicked(void) = 0;
 	virtual void OnEnemyHit(int life_left) = 0;
 	virtual void OnPlayerHit(int health) = 0;
+
 };
 
 #endif

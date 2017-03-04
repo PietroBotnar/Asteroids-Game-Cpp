@@ -2,11 +2,28 @@
 #include "GameObject.h"
 #include "GameWorld.h"
 
+#include <windows.h>									// Header File For The Windows Library
+#include <stdio.h>										// Header File For The Standard Input/Output Functions
+#include <stdlib.h>	
+#include <winuser.h>
+
+#include "..\include\FMOD_Studio\fmod_errors.h"
+#pragma comment(lib, "../lib/FMOD_Studio/fmod_vc.lib")
+
 // PUBLIC INSTANCE CONSTRUCTORS ///////////////////////////////////////////////
 
 /** Default constructor. */
 GameWorld::GameWorld(void) : mWidth(200), mHeight(200)
 {
+	//Initialise Audio System
+
+	// Create an FMOD system
+	result = FMOD::System_Create(&m_FmodSystem);
+	FmodErrorCheck(result, "FMOD");
+
+	// Initialise the system
+	result = m_FmodSystem->init(32, FMOD_INIT_NORMAL, 0);
+	FmodErrorCheck(result, "FMOD");
 }
 
 /** Destructor. */
@@ -206,4 +223,59 @@ void GameWorld::WrapXY(GLfloat &x, GLfloat &y)
 	while (y >  mHeight/2) y -= mHeight; 
 	while (x < -mWidth/2)  x += mWidth; 
 	while (y < -mHeight/2) y += mHeight; 
+}
+
+void GameWorld::PlayAudio(char * id, FMOD::Channel ** channel)
+{
+	auto audio = _audioFiles[id];
+	try {
+		result = m_FmodSystem->playSound(audio, NULL, false, channel);
+	}
+	catch(...){
+
+	}
+	
+}
+
+void GameWorld::PlayMusic(char * id)
+{
+	auto audio = _audioFiles[id];
+	result = m_FmodSystem->playSound(audio, NULL, false, &gameMusicChannel);
+}
+
+void GameWorld::LoadAudioFile(char * id, char * filename)
+{
+	FMOD::Sound* sound;
+	result = m_FmodSystem->createSound(filename, NULL, 0, &sound);
+	FmodErrorCheck(result, filename);
+
+	if (result != FMOD_OK)
+	{
+		delete sound;
+		return;
+	}
+	_audioFiles[id] = sound;
+}
+
+void GameWorld::LoadMusicStream(char * id, char * filename)
+{
+	FMOD::Sound* music;
+	result = m_FmodSystem->createStream(filename, NULL | FMOD_LOOP_NORMAL, 0, &music);
+	FmodErrorCheck(result, filename);
+
+	if (result != FMOD_OK)
+	{
+		delete music;
+		return;
+	}
+	_audioFiles[id] = music;
+}
+
+void GameWorld::FmodErrorCheck(FMOD_RESULT result, std::string filename)
+{
+	if (result == FMOD_OK) return;
+
+	char message[1024];
+	sprintf_s(message, "Cannot load audio\n%s\n", filename.c_str());
+	MessageBox(NULL, message, "Error", MB_ICONERROR);
 }

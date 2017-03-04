@@ -66,18 +66,18 @@ void Asteroids::Start()
 	glEnable(GL_LIGHT0);
 
 	//Initialise animations
-	Animation *explosion_anim = AnimationManager::GetInstance().CreateAnimationFromFile("explosion", 64, 1024, 64, 64, "explosion_fs.png");
-	Animation *asteroid1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "asteroid1_fs.png");
-	Animation *asteroid2_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid2", 128, 8192, 128, 128, "asteroid2_fs.png");
-	Animation *lifebonus_anim = AnimationManager::GetInstance().CreateAnimationFromFile("lifebonus", 128, 1024, 128, 128, "lifebonus_fs.png");
-	Animation *alien_spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("alien_spaceship", 310, 330, 310, 330, "revenant.png");
-	Animation *spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 500, 500, 500, 500, "7899.png");
-	Animation *shieldbonus_anim = AnimationManager::GetInstance().CreateAnimationFromFile("shield_powerup", 128, 1024, 128, 128, "shieldbonus_fs.png");
-	Animation *shield_anim = AnimationManager::GetInstance().CreateAnimationFromFile("shield", 300, 300, 300, 300, "shield3.png");
-	Animation *bulletupgrade_anim = AnimationManager::GetInstance().CreateAnimationFromFile("bulletupgrade", 128, 1024, 128, 128, "bulletupgrade_fs.png");
-	Animation *bullet_anim = AnimationManager::GetInstance().CreateAnimationFromFile("bullet1", 64, 36, 64, 36, "bullet1.png");
-	Animation *bullet2_anim = AnimationManager::GetInstance().CreateAnimationFromFile("bullet2", 128, 128, 128, 128, "bullet2.png");
-	Animation *alien_bullet_anim = AnimationManager::GetInstance().CreateAnimationFromFile("alien_bullet", 64, 36, 64, 36, "alien_bullet.png");
+	Animation *explosion_anim = AnimationManager::GetInstance().CreateAnimationFromFile("explosion", 64, 1024, 64, 64, "texture/explosion_fs.png");
+	Animation *asteroid1_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid1", 128, 8192, 128, 128, "texture/asteroid1_fs.png");
+	Animation *asteroid2_anim = AnimationManager::GetInstance().CreateAnimationFromFile("asteroid2", 128, 8192, 128, 128, "texture/asteroid2_fs.png");
+	Animation *lifebonus_anim = AnimationManager::GetInstance().CreateAnimationFromFile("lifebonus", 128, 1024, 128, 128, "texture/lifebonus_fs.png");
+	Animation *alien_spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("alien_spaceship", 310, 330, 310, 330, "texture/revenant.png");
+	Animation *spaceship_anim = AnimationManager::GetInstance().CreateAnimationFromFile("spaceship", 500, 500, 500, 500, "texture/player.png");
+	Animation *shieldbonus_anim = AnimationManager::GetInstance().CreateAnimationFromFile("shield_powerup", 128, 1024, 128, 128, "texture/shieldbonus_fs.png");
+	Animation *shield_anim = AnimationManager::GetInstance().CreateAnimationFromFile("shield", 300, 300, 300, 300, "texture/shield3.png");
+	Animation *bulletupgrade_anim = AnimationManager::GetInstance().CreateAnimationFromFile("bulletupgrade", 128, 1024, 128, 128, "texture/bulletupgrade_fs.png");
+	Animation *bullet_anim = AnimationManager::GetInstance().CreateAnimationFromFile("bullet1", 64, 36, 64, 36, "texture/bullet1.png");
+	Animation *bullet2_anim = AnimationManager::GetInstance().CreateAnimationFromFile("bullet2", 128, 128, 128, 128, "texture/bullet2.png");
+	Animation *alien_bullet_anim = AnimationManager::GetInstance().CreateAnimationFromFile("alien_bullet", 64, 36, 64, 36, "texture/alien_bullet.png");
 	bullet_sprite =	make_shared<Sprite>(bullet_anim->GetWidth(), bullet_anim->GetHeight(), bullet_anim);
 
 	mLevel = 1;
@@ -95,6 +95,21 @@ void Asteroids::Start()
 	// Create some asteroids and add them to the world
 	CreateAsteroids(10);
 	
+	//load audio files here
+	mGameWorld->LoadAudioFile("player_shot", "audio\\player_shot.wav");
+	mGameWorld->LoadAudioFile("enemy_shot", "audio\\enemy_shot.wav");
+	mGameWorld->LoadAudioFile("bang_m", "audio\\bangMedium.wav");
+	mGameWorld->LoadAudioFile("bang_l", "audio\\bangLarge.wav");
+	mGameWorld->LoadAudioFile("bonus1", "audio\\bonus1.wav");
+	mGameWorld->LoadAudioFile("bonus2", "audio\\bonus2.wav");
+	mGameWorld->LoadAudioFile("bonus3", "audio\\bonus3.wav");
+	mGameWorld->LoadAudioFile("explosion", "audio\\spaceship_explosion.wav");
+	mGameWorld->LoadAudioFile("impact", "audio\\impact.wav");
+	mGameWorld->LoadAudioFile("gameover", "audio\\game_over.mp3");
+	////load music
+	mGameWorld->LoadMusicStream("background", "audio\\star_commander.wav");
+
+	mGameWorld->PlayMusic("background");
 
 	// Start the game
 	GameSession::Start();
@@ -162,6 +177,7 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 	if (object->GetType() == GameObjectType("Asteroid"))
 	{
 		shared_ptr<GameObject> explosion = CreateExplosion();
+		mGameWorld->PlayAudio("bang_l");
 		explosion->SetPosition(object->GetPosition());
 		explosion->SetRotation(object->GetRotation());
 		mGameWorld->AddObject(explosion);
@@ -171,10 +187,12 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 	if (object->GetType() == GameObjectType("MiniAsteroid"))
 	{
 		shared_ptr<GameObject> explosion = CreateExplosion();
+		mGameWorld->PlayAudio("bang_m");
 		explosion->SetPosition(object->GetPosition());
 		explosion->SetRotation(object->GetRotation());
 		explosion->SetScale(0.4f);
 		mGameWorld->AddObject(explosion);
+		
 		mMiniAsteroidCount--;
 		if (mAsteroidCount <= 0 && mMiniAsteroidCount <= 0){
 			if (!mAlienSpaceship->IsInWorld()){
@@ -189,6 +207,7 @@ void Asteroids::OnObjectRemoved(GameWorld* world, shared_ptr<GameObject> object)
 		explosion->SetRotation(object->GetRotation());
 		//explosion->SetScale();
 		mGameWorld->AddObject(explosion);
+		mGameWorld->PlayAudio("explosion");
 		if (mAsteroidCount <= 0 && mMiniAsteroidCount <= 0){
 			SetTimer(500, START_NEXT_LEVEL);
 		}
@@ -227,6 +246,8 @@ void Asteroids::OnTimer(int value)
 	{
 		mAlienSpaceship->SetEngage(false);
 		mGameOverLabel->SetVisible(true);
+		mGameWorld->StopMusic();
+		mGameWorld->PlayAudio("gameover");
 	}
 
 	if (value == CREATE_NEW_BONUS)
@@ -293,6 +314,8 @@ void Asteroids::CreateAlienSpaceship(void)
 	mGameWorld->AddObject(mAlienAI);
 }
 
+
+
 void Asteroids::CreateAsteroids(const uint num_asteroids)
 {
 	mAsteroidCount = num_asteroids;
@@ -358,7 +381,7 @@ void Asteroids::CreateBonuses(void)
 
 void Asteroids::CreateBackground(void)
 {
-	mBackground = make_shared<Background>(2048, 2048, 2048, 2048, "space_bg.png");
+	mBackground = make_shared<Background>(2048, 2048, 2048, 2048, "texture/space_bg.png");
 	mGameWorld->AddObject(mBackground);
 }
 
@@ -439,6 +462,9 @@ void Asteroids::OnEnemyHit(int life_left)
 	if (life_left == 0){
 		mAlienHealthLabel->SetVisible(false);
 	}
+	else {
+		mGameWorld->PlayAudio("impact");
+	}
 }
 
 void Asteroids::OnPlayerHit(int health)
@@ -454,6 +480,9 @@ void Asteroids::OnPlayerHit(int health)
 	if (health == 0){
 		mPlayerHealthLabel->SetVisible(false);
 	}
+	else {
+		mGameWorld->PlayAudio("impact");
+	}
 }
 
 void Asteroids::OnPlayerKilled(int lives_left)
@@ -462,6 +491,8 @@ void Asteroids::OnPlayerKilled(int lives_left)
 	explosion->SetPosition(mSpaceship->GetPosition());
 	explosion->SetRotation(mSpaceship->GetRotation());
 	mGameWorld->AddObject(explosion);
+
+	mGameWorld->PlayAudio("explosion");
 
 	// Format the lives left message using an string-based stream
 	std::ostringstream msg_stream;
@@ -481,6 +512,7 @@ void Asteroids::OnBonusPicked(int lives)
 	std::string lives_msg = msg_stream.str();
 	mLivesLabel->SetText(lives_msg);
 	SetTimer(30000, CREATE_NEW_BONUS);
+	mGameWorld->PlayAudio("bonus1");
 }
 
 void Asteroids::OnShieldPicked(void)
@@ -493,6 +525,7 @@ void Asteroids::OnShieldPicked(void)
 		mSpaceship->SetShieldVisibility(true);
 	}
 	SetTimer(60000, CREATE_NEW_SHIELD);
+	mGameWorld->PlayAudio("bonus2");
 }
 
 void Asteroids::OnBulletUpgradePicked(void)
@@ -502,6 +535,7 @@ void Asteroids::OnBulletUpgradePicked(void)
 	mSpaceship->SetBulletSprite(bullet_sprite2);
 	mSpaceship->IncreaseBulletSpeed(30);
 	SetTimer(90000, CREATE_NEW_BULLET_UPGRADE);
+	mGameWorld->PlayAudio("bonus3");
 }
 
 
@@ -516,3 +550,5 @@ shared_ptr<GameObject> Asteroids::CreateExplosion()
 	explosion->Reset();
 	return explosion;
 }
+
+

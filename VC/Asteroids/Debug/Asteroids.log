@@ -1,5 +1,21 @@
-﻿Build started 02/04/2015 11:56:13.
-
-Build succeeded.
-
-Time Elapsed 00:00:00.04
+﻿  Spaceship.cpp
+h:\myrepos\asteroids-game-cpp\src\spaceship.cpp(138): warning C4553: '==': operator has no effect; did you intend '='?
+  ShieldPowerUp.cpp
+  Shield.cpp
+  MiniAsteroid.cpp
+  main.cpp
+  LifeBonus.cpp
+  Explosion.cpp
+  BulletUpgrade.cpp
+  Bullet.cpp
+  Background.cpp
+  Asteroids.cpp
+  Asteroid.cpp
+  AlienSpaceship.cpp
+  Generating Code...
+AlienSpaceship.obj : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH' specification
+  Asteroids.vcxproj -> H:\MyRepos\Asteroids-Game-Cpp\VC\Asteroids\..\..\bin\Asteroids.exe
+  Asteroids.vcxproj -> Debug\Asteroids.pdb (Full PDB)
+  The system cannot find the path specified.
+C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppCommon.targets(133,5): error MSB3073: The command "copy ..\..\assets\*.* ..\..\bin
+C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppCommon.targets(133,5): error MSB3073: :VCEnd" exited with code 1.
